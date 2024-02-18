@@ -30,9 +30,17 @@ const HomePage = ({ navigation }) => {
     navigation.navigate("TweetView");
   }
 
+  function gotoProfilePage() {
+    navigation.navigate("ProfilePage");
+  }
+
+  function gotoNewTweetPage() {
+    navigation.navigate("NewTweetPage");
+  }
+
   const Item = ({ item }) => (
     <View style={styles.item}>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={() => gotoProfilePage()}>
         <Image
           style={styles.avatar}
           source={{ uri: "https://reactnative.dev/img/tiny_logo.png" }}
@@ -89,7 +97,10 @@ const HomePage = ({ navigation }) => {
         )}
       />
 
-      <TouchableOpacity style={styles.floatingButton}>
+      <TouchableOpacity
+        style={styles.floatingButton}
+        onPress={() => gotoNewTweetPage()}
+      >
         <Ionicons name="add" size={26} color="white" />
       </TouchableOpacity>
     </View>

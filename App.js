@@ -9,6 +9,7 @@ import { Ionicons } from '@expo/vector-icons';
 import HomePage from './pages/HomePage';
 import TweetViewPage from './pages/TweetViewPage';
 import ProfilePage from './pages/ProfilePage';
+import NewTweetPage from './pages/NewTweetPage';
 
 function HomeScreen({ navigation }) {
   return (
@@ -43,6 +44,7 @@ const HomeStackNavigator = () => {
       <Stack.Screen name="Tab" component={TabNavigator} options={{ headerShown: false }} />
       <Stack.Screen name="TweetView" component={TweetViewPage} options={{ title: '' }} />
       <Stack.Screen name="ProfilePage" component={ProfilePage} options={{ title: '' }} />
+      <Stack.Screen name="NewTweetPage" component={NewTweetPage} options={{ title: '' }} />
     </Stack.Navigator>
   );
 }

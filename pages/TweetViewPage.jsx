@@ -3,11 +3,18 @@ import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
 
-const TweetViewPage = () => {
+const TweetViewPage = ({ navigation }) => {
+  function gotoProfilePage() {
+    navigation.navigate("ProfilePage");
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.profileContainer}>
-        <TouchableOpacity style={styles.flexRow}>
+        <TouchableOpacity
+          style={styles.flexRow}
+          onPress={() => gotoProfilePage()}
+        >
           <Image
             style={styles.avatar}
             source={{ uri: "https://reactnative.dev/img/tiny_logo.png" }}
