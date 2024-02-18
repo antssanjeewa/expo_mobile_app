@@ -1,4 +1,6 @@
 import {
+  ActivityIndicator,
+  Alert,
   Image,
   StyleSheet,
   Text,
@@ -7,24 +9,51 @@ import {
   View,
 } from "react-native";
 import React, { useState } from "react";
+import axiosConfig from "../helpers/axiosConfig";
 
-export default NewTweetPage = () => {
+export default function NewTweetPage({ navigation }) {
   const [tweet, setTweet] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   function sendTweet() {
-    alert(tweet);
+    if (tweet.length == 0) {
+      Alert.alert("Please enter a tweet");
+      return;
+    }
+
+    setIsLoading(true);
+    axiosConfig
+      .post("/posts/add", {
+        title: tweet,
+        userId: 5,
+      })
+      .then((response) => {
+        // setTweet(response.data);
+        // setIsLoading(false);
+        // console.log(response);
+        setIsLoading(false);
+        navigation.navigate("Home2");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   return (
     <View style={styles.container}>
       <View style={styles.tweetButtonContainer}>
         <Text>Character Left : {280 - tweet.length}</Text>
-        <TouchableOpacity
-          style={styles.tweetButton}
-          onPress={() => sendTweet()}
-        >
-          <Text style={styles.tweetButtonText}>Tweet</Text>
-        </TouchableOpacity>
+
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          {isLoading && <ActivityIndicator />}
+          <TouchableOpacity
+            style={styles.tweetButton}
+            onPress={() => sendTweet()}
+            disabled={isLoading}
+          >
+            <Text style={styles.tweetButtonText}>Tweet</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       <View style={styles.tweetBoxContainer}>
@@ -45,7 +74,7 @@ export default NewTweetPage = () => {
       </View>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   textGray: {

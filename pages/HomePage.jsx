@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import {
   View,
@@ -8,30 +8,59 @@ import {
   Image,
   StatusBar,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
+import axiosConfig from "../helpers/axiosConfig";
 
 const HomePage = ({ navigation }) => {
-  const DATA = [
-    {
-      id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-      title: "First Item",
-    },
-    {
-      id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-      title: "Second Item",
-    },
-    {
-      id: "58694a0f-3da1-471f-bd96-145571e29d72",
-      title: "Third Item",
-    },
-  ];
+  const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [page, setPage] = useState(0);
 
-  function gotoTweetView() {
-    navigation.navigate("TweetView");
+  useEffect(() => {
+    getPostData();
+  }, [page]);
+
+  function getPostData() {
+    axiosConfig
+      .get("/posts?limit=10&skip=" + page)
+      .then((response) => {
+        // if (page == 0) {
+        setData(response.data.posts);
+        // } else {
+        // setData([...data, ...response.data.posts]);
+        // }
+
+        setIsLoading(false);
+        setIsRefreshing(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setIsLoading(false);
+        setIsRefreshing(false);
+      });
   }
 
-  function gotoProfilePage() {
-    navigation.navigate("ProfilePage");
+  function handleRefresh() {
+    setPage(0);
+    setIsRefreshing(true);
+  }
+
+  function handleEnd() {
+    setPage(page + 10);
+  }
+
+  function gotoTweetView(tweetId) {
+    navigation.navigate("TweetView", {
+      tweetId: tweetId,
+    });
+  }
+
+  function gotoProfilePage(userId) {
+    navigation.navigate("ProfilePage", {
+      userId: userId,
+    });
   }
 
   function gotoNewTweetPage() {
@@ -40,10 +69,10 @@ const HomePage = ({ navigation }) => {
 
   const Item = ({ item }) => (
     <View style={styles.item}>
-      <TouchableOpacity onPress={() => gotoProfilePage()}>
+      <TouchableOpacity onPress={() => gotoProfilePage(item.userId)}>
         <Image
           style={styles.avatar}
-          source={{ uri: "https://reactnative.dev/img/tiny_logo.png" }}
+          source={{ uri: "https://i.pravatar.cc/200?img=" + item.userId }}
         ></Image>
       </TouchableOpacity>
 
@@ -54,13 +83,8 @@ const HomePage = ({ navigation }) => {
           <Text>&middot;</Text>
           <Text style={styles.details}>9m</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => gotoTweetView()}>
-          <Text style={styles.tweet}>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem, nisi
-            saepe voluptates dolorum nihil, dolore sit consequatur, impedit id a
-            laudantium atque quas tempore! Ullam velit debitis non corporis
-            quis!
-          </Text>
+        <TouchableOpacity onPress={() => gotoTweetView(item.id)}>
+          <Text style={styles.tweet}>{item.body}</Text>
         </TouchableOpacity>
 
         <View style={{ flexDirection: "row" }}>
@@ -86,16 +110,30 @@ const HomePage = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={DATA}
-        renderItem={({ item }) => <Item item={item} />}
-        keyExtractor={(item) => item.id}
-        ItemSeparatorComponent={() => (
-          <View
-            style={{ borderBottomWidth: 1, borderBottomColor: "#e5e7eb" }}
-          ></View>
-        )}
-      />
+      {isLoading ? (
+        <ActivityIndicator
+          size="large"
+          style={{ marginTop: 8 }}
+        ></ActivityIndicator>
+      ) : (
+        <FlatList
+          data={data}
+          renderItem={({ item }) => <Item item={item} />}
+          keyExtractor={(item) => item.id}
+          ItemSeparatorComponent={() => (
+            <View
+              style={{ borderBottomWidth: 1, borderBottomColor: "#e5e7eb" }}
+            ></View>
+          )}
+          refreshing={isRefreshing}
+          onRefresh={handleRefresh}
+          onEndReached={handleEnd}
+          onEndReachedThreshold={0}
+          ListFooterComponent={() => (
+            <ActivityIndicator size="large" color="gray" />
+          )}
+        />
+      )}
 
       <TouchableOpacity
         style={styles.floatingButton}

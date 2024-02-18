@@ -55,7 +55,7 @@ const TabNavigator = () => {
       headerShown: false,
       tabBarShowLabel: false,
     }}>
-      <Tab.Screen name="Home" component={HomePage} options={
+      <Tab.Screen name="Home2" component={HomePage} options={
         {
           tabBarIcon: () => (
             <Ionicons name="home" size={24} color="black" />
