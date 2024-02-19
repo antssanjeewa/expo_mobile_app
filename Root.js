@@ -95,18 +95,18 @@ const TabNavigator = () => {
 
 const LotsOfStyles = () => {
 
-  const [isLoading, setIsLoading] = useState(true);
-  const [user, setUser] = useContext(AuthContext);
+  const [isLoading, setIsLoading] = useState(false);
+  // const [user, setUser] = useContext(AuthContext);
 
   useEffect(() => {
 
-    SecureStore.getItemAsync('user')
-      .then(userString => {
-        if (userString) {
-          setUser('Ants') // Todo
-        }
-        setIsLoading(false);
-      })
+    // SecureStore.getItemAsync('user')
+    //   .then(userString => {
+    //     if (userString) {
+    //       // setUser('Ants') // Todo
+    //     }
+    //     setIsLoading(false);
+    //   })
   }, [])
 
   if (isLoading) {
@@ -118,22 +118,22 @@ const LotsOfStyles = () => {
   }
 
   return (
-    <>
-      {user ? (
-        <NavigationContainer>
-          <Drawer.Navigator initialRouteName='Home' screenOptions={{
-            headerShown: true
-          }} >
-            <Drawer.Screen name="Home" component={HomeStackNavigator} />
-            < Drawer.Screen name="Post" component={PostScreen} />
-          </Drawer.Navigator >
-        </NavigationContainer >
-      ) : (
-        <NavigationContainer>
-          <AuthStackNavigator />
-        </NavigationContainer >
-      )}
-    </>
+    // <>
+    //   {user ? (
+    <NavigationContainer>
+      <Drawer.Navigator initialRouteName='Home' screenOptions={{
+        headerShown: true
+      }} >
+        <Drawer.Screen name="Home" component={HomeStackNavigator} />
+        < Drawer.Screen name="Post" component={PostScreen} />
+      </Drawer.Navigator >
+    </NavigationContainer >
+    //   ) : (
+    //     <NavigationContainer>
+    //       <AuthStackNavigator />
+    //     </NavigationContainer >
+    //   )}
+    // </>
 
   );
 };

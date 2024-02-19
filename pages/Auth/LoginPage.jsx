@@ -22,7 +22,7 @@ export default function LoginPage({ navigation }) {
         <View style={{ alignItems: "center" }}>
           <Image
             style={styles.logo}
-            source={require("../../assets/larydefault.png")}
+            source={require("../../assets/icon.png")}
           ></Image>
         </View>
         <View style={{ marginTop: 40 }}>
